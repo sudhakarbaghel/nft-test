@@ -17,11 +17,12 @@ const Group: React.FC<Props> = ({ title, id }: Props) => {
         <img src={imageUrl} alt={title} className="card-image" />
       </div>
       <div className="networkWrap">
-      <div className="network">
-        <EthLogo />
-        <span>Sepolia</span>
+        <div className="network">
+          <EthLogo />
+          <span>Sepolia</span>
+        </div>
+        <span className="card-title">{title}</span>
       </div>
-        <span className="card-title">{title}</span></div>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import * as React from "react"
+import * as React from "react";
 const EthLogo = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -8,7 +8,6 @@ const EthLogo = () => (
     height={19}
     fill="#000"
     viewBox="0 0 32 32"
- 
   >
     <g id="SVGRepo_iconCarrier">
       <style>{".st17{fill:#455a64}"}</style>
@@ -116,5 +115,5 @@ const EthLogo = () => (
       </g>
     </g>
   </svg>
-)
-export default EthLogo
+);
+export default EthLogo;

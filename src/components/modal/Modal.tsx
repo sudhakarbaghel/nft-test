@@ -11,13 +11,18 @@ import {
 } from "@chakra-ui/react";
 
 interface StatusModalProps {
-  type: "success" | "error"; 
-  message: string; 
-  isOpen: boolean; 
-  onClose: () => void; 
+  type: "success" | "error";
+  message: string;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
-const StatusModal: React.FC<StatusModalProps> = ({ type, message, isOpen, onClose }) => {
+const StatusModal: React.FC<StatusModalProps> = ({
+  type,
+  message,
+  isOpen,
+  onClose,
+}) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
@@ -28,7 +33,10 @@ const StatusModal: React.FC<StatusModalProps> = ({ type, message, isOpen, onClos
           <p>{message}</p>
         </ModalBody>
         <ModalFooter>
-          <Button colorScheme={type === "success" ? "green" : "red"} onClick={onClose}>
+          <Button
+            colorScheme={type === "success" ? "green" : "red"}
+            onClick={onClose}
+          >
             Close
           </Button>
         </ModalFooter>

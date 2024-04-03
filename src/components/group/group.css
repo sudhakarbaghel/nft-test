@@ -1,24 +1,22 @@
-
-
 .card {
-  width: 300px; 
+  width: 300px;
   border: 1px solid #ddd;
   border-radius: 20px;
   overflow: hidden;
   margin: 16px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  cursor: pointer; 
+  cursor: pointer;
   transition: transform 0.3s ease-in-out;
   background-color: #f4f4f4;
-height: max-content;
+  height: max-content;
 }
 
 .card:hover {
-  transform: scale(1.05); 
+  transform: scale(1.05);
 }
-.imageWrap{
+.imageWrap {
   width: 100%;
-  height: 200px; 
+  height: 200px;
   object-fit: cover;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
@@ -30,9 +28,9 @@ height: max-content;
 }
 
 .card-image {
- object-fit: cover;
- width: 100%;
- height: 200px; 
+  object-fit: cover;
+  width: 100%;
+  height: 200px;
 }
 
 .card-title {
@@ -42,19 +40,17 @@ height: max-content;
   background-color: #f4f4f4;
 }
 
-.network{
+.network {
   display: flex;
   align-items: center;
-  gap:5px;
-
+  gap: 5px;
 }
-.network span{
+.network span {
   font-size: 14px;
   font-weight: bold;
 }
-.networkWrap{
+.networkWrap {
   display: flex;
   justify-content: space-between;
   padding: 12px 30px 12px 12px;
-
 }

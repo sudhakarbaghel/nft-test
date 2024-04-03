@@ -4,10 +4,8 @@ import { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@rainbow-me/rainbowkit/styles.css";
 import "./globals.css";
-import { ChakraProvider } from '@chakra-ui/react'
+import { ChakraProvider } from "@chakra-ui/react";
 import Topbar from "@/components/topbar/Topbar";
-
-
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,10 +22,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-      <ChakraProvider>
-        <WalletAndClientProvider>
-          <Topbar/>
-          {children}</WalletAndClientProvider>
+        <ChakraProvider>
+          <WalletAndClientProvider>
+            <Topbar />
+            {children}
+          </WalletAndClientProvider>
         </ChakraProvider>
       </body>
     </html>

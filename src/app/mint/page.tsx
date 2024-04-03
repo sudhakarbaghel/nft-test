@@ -63,8 +63,8 @@ const MintPage = () => {
         args: batchMint
           ? [recipientAddress, nftCount]
           : recipientEnabled
-          ? [recipientAddress]
-          : [],
+            ? [recipientAddress]
+            : [],
       });
     } catch (error) {
       setError("Failed to mint NFT");
@@ -94,7 +94,7 @@ const MintPage = () => {
     if (errMsg || isConfirmed || error) {
       onOpen();
     }
-  }, [errMsg, onOpen, isConfirmed , error]);
+  }, [errMsg, onOpen, isConfirmed, error]);
 
   return (
     <FormControl isInvalid={!!error}>

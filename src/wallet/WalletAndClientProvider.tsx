@@ -25,7 +25,7 @@ import { WagmiProvider } from "wagmi";
 
 const { wallets } = getDefaultWallets();
 
-export  const config = getDefaultConfig({
+export const config = getDefaultConfig({
   appName: "RainbowKit demo",
   projectId: "4c7984604816914a0f54b9e3bbe835c2",
   wallets: [
@@ -35,9 +35,7 @@ export  const config = getDefaultConfig({
       wallets: [argentWallet, trustWallet, ledgerWallet],
     },
   ],
-  chains: [
-    sepolia
-  ],
+  chains: [sepolia],
   ssr: true,
 });
 

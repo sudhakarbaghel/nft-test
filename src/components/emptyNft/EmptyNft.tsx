@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "@chakra-ui/react";
 import Link from "next/link";
-import "./emptyNft.css"
+import "./emptyNft.css";
 
 const EmptyNft = () => {
   return (
@@ -14,6 +14,5 @@ const EmptyNft = () => {
     </div>
   );
 };
-
 
 export default EmptyNft;

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Group from "../components/group/Group";
 import { useAccount, useReadContract } from "wagmi";
@@ -45,8 +45,8 @@ function Page() {
         ) : (
           <EmptyNft />
         )}
-        {!isConnected && !isPending? <ConnectWallet />:''}
-        <MintNft/>
+        {!isConnected && !isPending ? <ConnectWallet /> : ""}
+        <MintNft />
       </div>
     </>
   );
