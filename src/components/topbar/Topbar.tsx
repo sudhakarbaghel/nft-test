@@ -9,8 +9,7 @@ export default function Topbar({}: Props) {
     <div className="topbar">
       <Link href="/">
         <div className="logoTitle">
-          <h1>NFTea</h1>
-          <img src={logoSrc} alt="logo" />
+          <h1>NFT-TASK</h1>
         </div>
       </Link>
 
