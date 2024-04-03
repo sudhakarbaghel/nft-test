@@ -31,8 +31,6 @@ function Page() {
       groups.push(<Group title={`nft${i + 1}`} key={i} id={i + 1} />);
     }
   }
-  console.log("🚀 ~ Page ~ data:", data)
-
 
   return (
     <>

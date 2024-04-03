@@ -29,6 +29,7 @@ const MintPage = () => {
     isPending,
     writeContract,
   } = useWriteContract();
+    console.log("🚀 ~ MintPage ~ errMsg:", errMsg)
   const [recipientEnabled, setRecipientEnabled] = useState(false);
   const [batchMint, setBatchMint] = useState(false);
   const [recipientAddress, setRecipientAddress] = useState("");
@@ -62,7 +63,7 @@ const MintPage = () => {
         functionName: batchMint ? "batchMint" : "mint",
         args: batchMint
           ? [recipientAddress, nftCount]
-          : recipientAddress
+          : recipientEnabled
           ? [recipientAddress]
           : [],
       });
