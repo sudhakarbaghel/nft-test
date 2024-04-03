@@ -1,0 +1,22 @@
+.topbar {
+    display: flex;
+    margin: 20px 50px;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .topbar .logoTitle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+  }
+  .topbar .logoTitle img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    margin-bottom: 15px;
+  }
+  .topbar .logoTitle h1 {
+    font-size: 28px;
+    font-weight: bold;
+  }
