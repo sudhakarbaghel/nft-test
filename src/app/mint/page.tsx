@@ -22,6 +22,7 @@ import {
   useAccount,
 } from "wagmi";
 import Modal from "../../components/modal/Modal";
+import ConnectWallet from "@/components/connectWallet/ConnectWallet";
 const MintPage = () => {
   const {
     data: hash,
@@ -95,7 +96,9 @@ const MintPage = () => {
       onOpen();
     }
   }, [errMsg, onOpen, isConfirmed, error]);
-
+  if (!isConnected) {
+    return <ConnectWallet />;
+  }
   return (
     <FormControl isInvalid={!!error}>
       <Box

@@ -31,7 +31,9 @@ function Page() {
       groups.push(<Group title={`nft${i + 1}`} key={i} id={i + 1} />);
     }
   }
-
+if(!isConnected){
+  return <ConnectWallet/>
+}
   return (
     <>
       <div className="content">
@@ -43,7 +45,7 @@ function Page() {
         ) : groups.length > 0 ? (
           groups
         ) : (
-          <EmptyNft />
+        isConnected ?  <EmptyNft />:''
         )}
         {!isConnected && !isPending ? <ConnectWallet /> : ""}
         <MintNft />
