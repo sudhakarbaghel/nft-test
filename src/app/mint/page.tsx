@@ -95,7 +95,7 @@ const MintPage = () => {
     if (errMsg || isConfirmed || error) {
       onOpen();
     }
-  }, [errMsg, onOpen, isConfirmed || error]);
+  }, [errMsg, onOpen, isConfirmed , error]);
 
   return (
     <FormControl isInvalid={!!error}>
@@ -185,7 +185,7 @@ const MintPage = () => {
         )}
         {batchMint && (
           <>
-            <FormLabel mt={4}>NFT's count</FormLabel>
+            <FormLabel mt={4}>NFT&apos;s count</FormLabel>
             <Input type="number" value={nftCount} onChange={handleNftCount} />
           </>
         )}
