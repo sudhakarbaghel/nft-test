@@ -1,7 +1,7 @@
-"use client";
+"use client"
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Group from "../components/group/Group";
-import { useAccount, useReadContract, useWriteContract } from "wagmi";
+import { useAccount, useReadContract } from "wagmi";
 import { abi, contAddress } from "../utills/contract";
 import { config } from "../wallet/WalletAndClientProvider";
 import { Spinner } from "@chakra-ui/react";
@@ -10,6 +10,7 @@ import { logoSrc } from "../assets/index";
 import LoadingSkeleton from "../components/loadingSkeleton/LoadingSkeleton";
 import EmptyNft from "../components/emptyNft/EmptyNft";
 import ConnectWallet from "../components/connectWallet/ConnectWallet";
+import MintNft from "@/components/mintNft/MintNft";
 
 function Page() {
   const { isConnected, address } = useAccount();
@@ -18,31 +19,36 @@ function Page() {
     config,
     abi,
     address: contAddress,
-    functionName: "getGroupsForMember",
-    account: address,
+    functionName: "balanceOf",
+    args: [address],
   });
+
+  const numNFTs = Number(data);
+
+  let groups = [];
+  if (!isNaN(numNFTs) && numNFTs > 0) {
+    for (let i = 0; i < numNFTs; i++) {
+      groups.push(<Group title={`nft${i + 1}`} key={i} id={i + 1} />);
+    }
+  }
+  console.log("🚀 ~ Page ~ data:", data)
+
 
   return (
     <>
-     
       <div className="content">
         {isPending ? (
           <>
             <LoadingSkeleton />
             <LoadingSkeleton />
           </>
-        ) : Array.isArray(data) && data.length > 0 ? (
-          data.map((title, i) => <Group title={title} key={i} id={1} />)
+        ) : groups.length > 0 ? (
+          groups
         ) : (
-          <div>No data available</div>
+          <EmptyNft />
         )}
-        <EmptyNft />
-        {/* <div style={{display:'flex',justifyContent:'center'}}> */}
-
-        {/* <ConnectWallet/> */}
-        <LoadingSkeleton />
-
-         
+        {!isConnected && !isPending? <ConnectWallet />:''}
+        <MintNft/>
       </div>
     </>
   );

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -9,20 +9,46 @@ import {
   FormLabel,
   Input,
   Spinner,
+  useDisclosure,
 } from "@chakra-ui/react";
 import Web3 from "web3";
+import { abi, contAddress } from "@/utills/contract";
 
+import {
+  type BaseError,
+  useWriteContract,
+  useReadContract,
+  useWaitForTransactionReceipt,
+  useAccount,
+} from "wagmi";
+import Modal from "../../components/modal/Modal";
 const MintPage = () => {
+  const {
+    data: hash,
+    error: errMsg,
+    isPending,
+    writeContract,
+  } = useWriteContract();
   const [recipientEnabled, setRecipientEnabled] = useState(false);
+  const [batchMint, setBatchMint] = useState(false);
   const [recipientAddress, setRecipientAddress] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [nftCount, setNftCount] = useState(1);
   const [error, setError] = useState("");
-  const [minted, setMinted] = useState(false);
-
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isConnected, address } = useAccount();
+  const { data: owner, isError } = useReadContract({
+    abi,
+    address: contAddress,
+    functionName: "owner",
+  });
   const handleMint = async () => {
     try {
       if (recipientEnabled && !validateRecipientAddress()) {
         setError("Invalid recipient address");
+        return;
+      }
+      if (batchMint && nftCount < 1) {
+        setError("NFT count should be greter then 0!");
         return;
       }
 
@@ -30,20 +56,30 @@ const MintPage = () => {
         setError("Recipient address is required");
         return;
       }
-
-      setLoading(true);
-      // Simulating minting process, replace with actual minting logic
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      setMinted(true);
+      writeContract({
+        abi,
+        address: contAddress,
+        functionName: batchMint ? "batchMint" : "mint",
+        args: batchMint
+          ? [recipientAddress, nftCount]
+          : recipientAddress
+          ? [recipientAddress]
+          : [],
+      });
     } catch (error) {
       setError("Failed to mint NFT");
-    } finally {
-      setLoading(false);
     }
   };
+  const { isLoading: isConfirming, isSuccess: isConfirmed } =
+    useWaitForTransactionReceipt({
+      hash,
+    });
 
   const handleRecipientAddressChange = (event: any) => {
     setRecipientAddress(event.target.value);
+  };
+  const handleNftCount = (event: any) => {
+    setNftCount(event.target.value);
   };
 
   const validateRecipientAddress = () => {
@@ -54,6 +90,11 @@ const MintPage = () => {
     }
     return true;
   };
+  useEffect(() => {
+    if (errMsg || isConfirmed || error) {
+      onOpen();
+    }
+  }, [errMsg, onOpen, isConfirmed || error]);
 
   return (
     <FormControl isInvalid={!!error}>
@@ -79,7 +120,7 @@ const MintPage = () => {
           <img
             src="https://assets-v2.lottiefiles.com/a/26d7b8e2-1188-11ee-b97e-47663effbb98/7TneXvpXDi.gif"
             alt="Background"
-            style={{ width: "100%", height: "auto" }}
+            style={{ width: "100%", height: "auto", zIndex: "-1" }}
           />
         </div>
         <h1
@@ -92,16 +133,44 @@ const MintPage = () => {
         >
           Mint NFT
         </h1>
+
         <Checkbox
-          onChange={() => setRecipientEnabled(!recipientEnabled)}
-          isChecked={recipientEnabled}
+          onChange={() => {
+            if (address != owner) {
+              setRecipientEnabled(false);
+              onOpen();
+              setError("Only owner can add recipient!");
+            } else if (batchMint) {
+              setRecipientEnabled(true);
+            } else {
+              setRecipientEnabled(!recipientEnabled);
+            }
+          }}
+          isChecked={recipientEnabled || batchMint}
           mt={4}
           marginRight="auto"
           marginLeft="auto"
         >
           Add Recipient Address
         </Checkbox>
-        {recipientEnabled && (
+        <Checkbox
+          onChange={() => {
+            if (address != owner) {
+              setBatchMint(false);
+              onOpen();
+              setError("Only owner can perform batch mint!");
+            } else {
+              setBatchMint(!batchMint);
+            }
+          }}
+          isChecked={batchMint}
+          mt={4}
+          marginRight="auto"
+          marginLeft="auto"
+        >
+          Batch Mint
+        </Checkbox>
+        {recipientEnabled || batchMint ? (
           <>
             <FormLabel mt={4}>Recipient Address</FormLabel>
             <Input
@@ -110,8 +179,15 @@ const MintPage = () => {
               onChange={handleRecipientAddressChange}
             />
           </>
+        ) : (
+          ""
         )}
-        {error && <FormErrorMessage>{error}</FormErrorMessage>}
+        {batchMint && (
+          <>
+            <FormLabel mt={4}>NFT's count</FormLabel>
+            <Input type="number" value={nftCount} onChange={handleNftCount} />
+          </>
+        )}
 
         <div>
           <Button
@@ -121,26 +197,48 @@ const MintPage = () => {
             marginLeft="auto"
             marginRight="auto"
             isDisabled={
-              loading || (recipientEnabled && !recipientAddress.trim())
+              isPending ||
+              (recipientEnabled && !recipientAddress) ||
+              (batchMint && nftCount < 1)
             }
           >
-            {loading ? (
-                <Spinner
-                  size="md"
-                  color="white.500"
-                  mt={4}
-                  marginLeft="auto"
-                  marginRight="auto"
-                />
+            {isConfirming ? (
+              <Spinner
+                size="md"
+                color="white.500"
+                mt={4}
+                marginLeft="auto"
+                marginRight="auto"
+              />
             ) : (
               "MINT"
             )}
           </Button>
         </div>
-        {minted && (
-          <Box color="green" mt={4} textAlign="center">
-            NFT Minted Successfully!
-          </Box>
+        {isConfirmed && (
+          <Modal
+            type="success"
+            message="Successfully minted NFT!"
+            isOpen={isOpen}
+            onClose={onClose}
+          />
+        )}
+        {errMsg && (
+          <Modal
+            type="error"
+            message={(errMsg as BaseError).shortMessage || errMsg.message}
+            isOpen={isOpen}
+            onClose={onClose}
+          />
+        )}
+
+        {error && (
+          <Modal
+            type="error"
+            message={error}
+            isOpen={isOpen}
+            onClose={onClose}
+          />
         )}
       </Box>
     </FormControl>

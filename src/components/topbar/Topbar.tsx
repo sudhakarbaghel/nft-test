@@ -1,18 +1,22 @@
-import { logoSrc } from '@/assets'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
-import "./topbar.css"
-type Props = {}
+import { logoSrc } from "@/assets";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import "./topbar.css";
+import Link from "next/link";
+type Props = {};
 
 export default function Topbar({}: Props) {
   return (
     <div className="topbar">
-    <div className="logoTitle">
-      <h1>NFTea</h1>
-      <img src={logoSrc} alt="logo" />
+      <Link href="/">
+        <div className="logoTitle">
+          <h1>NFTea</h1>
+          <img src={logoSrc} alt="logo" />
+        </div>
+      </Link>
+
+      <div>
+        <ConnectButton />
+      </div>
     </div>
-    <div>
-      <ConnectButton />
-    </div>
-    </div>
-  )
+  );
 }
