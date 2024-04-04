@@ -5,7 +5,6 @@ import {
   Button,
   Checkbox,
   FormControl,
-  FormErrorMessage,
   FormLabel,
   Input,
   Spinner,
@@ -23,6 +22,7 @@ import {
 } from "wagmi";
 import Modal from "../../components/modal/Modal";
 import ConnectWallet from "@/components/connectWallet/ConnectWallet";
+import './page.css';
 const MintPage = () => {
   const {
     data: hash,
@@ -34,6 +34,7 @@ const MintPage = () => {
   const [batchMint, setBatchMint] = useState(false);
   const [recipientAddress, setRecipientAddress] = useState("");
   const [nftCount, setNftCount] = useState(1);
+  const [mintForSelf, setMintForSelf] = useState(false);
   const [error, setError] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isConnected, address } = useAccount();
@@ -46,6 +47,10 @@ const MintPage = () => {
     try {
       if (recipientEnabled && !validateRecipientAddress()) {
         setError("Invalid recipient address");
+        return;
+      }
+      if (!mintForSelf) {
+        setError("Please select an option to proceed!");
         return;
       }
       if (batchMint && nftCount < 1) {
@@ -96,6 +101,11 @@ const MintPage = () => {
       onOpen();
     }
   }, [errMsg, onOpen, isConfirmed, error]);
+  useEffect(() => {
+    if (address != owner) {
+      setMintForSelf(true);
+    }
+  }, [address, owner]);
   if (!isConnected) {
     return <ConnectWallet />;
   }
@@ -137,42 +147,60 @@ const MintPage = () => {
           Mint NFT
         </h1>
 
-        <Checkbox
-          onChange={() => {
-            if (address != owner) {
-              setRecipientEnabled(false);
-              onOpen();
-              setError("Only owner can add recipient!");
-            } else if (batchMint) {
-              setRecipientEnabled(true);
-            } else {
-              setRecipientEnabled(!recipientEnabled);
-            }
-          }}
-          isChecked={recipientEnabled || batchMint}
-          mt={4}
-          marginRight="auto"
-          marginLeft="auto"
-        >
-          Add Recipient Address
-        </Checkbox>
-        <Checkbox
-          onChange={() => {
-            if (address != owner) {
-              setBatchMint(false);
-              onOpen();
-              setError("Only owner can perform batch mint!");
-            } else {
-              setBatchMint(!batchMint);
-            }
-          }}
-          isChecked={batchMint}
-          mt={4}
-          marginRight="auto"
-          marginLeft="auto"
-        >
-          Batch Mint
-        </Checkbox>
+        <div className="checkBoxWrap">
+          <span>Add Recipient Address</span>
+          <Checkbox
+            onChange={() => {
+              if (address != owner) {
+                setRecipientEnabled(false);
+                onOpen();
+                setError("Only owner can add recipient!");
+              } else if (batchMint) {
+                setRecipientEnabled(true);
+              } else {
+                setRecipientEnabled(!recipientEnabled);
+              }
+            }}
+            isChecked={recipientEnabled || batchMint}
+            mt={4}
+            marginRight="auto"
+            marginLeft="auto"
+            display="block"
+          />
+        </div>
+        <div className="checkBoxWrap">
+          <span>Batch Mint</span>
+          <Checkbox
+            onChange={() => {
+              if (address != owner) {
+                setBatchMint(false);
+                onOpen();
+                setError("Only owner can perform batch mint!");
+              } else {
+                setBatchMint(!batchMint);
+              }
+            }}
+            isChecked={batchMint}
+            mt={4}
+            marginRight="auto"
+            marginLeft="auto"
+            display={"block"}
+          />
+        </div>
+
+        <div className="checkBoxWrap">
+          <span>Mint for self</span>
+          <Checkbox
+            onChange={() => {
+              setMintForSelf(!mintForSelf);
+            }}
+            isChecked={mintForSelf}
+            mt={4}
+            marginRight="auto"
+            marginLeft="auto"
+          />
+        </div>
+
         {recipientEnabled || batchMint ? (
           <>
             <FormLabel mt={4}>Recipient Address</FormLabel>
@@ -202,7 +230,8 @@ const MintPage = () => {
             isDisabled={
               isPending ||
               (recipientEnabled && !recipientAddress) ||
-              (batchMint && nftCount < 1)
+              (batchMint && nftCount < 1) ||
+              !mintForSelf
             }
           >
             {isConfirming ? (

@@ -1,12 +1,9 @@
 "use client";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-import Group from "../components/group/Group";
+import NftCard from "../components/nftCard/NftCard";
 import { useAccount, useReadContract } from "wagmi";
 import { abi, contAddress } from "../utills/contract";
 import { config } from "../wallet/WalletAndClientProvider";
-import { Spinner } from "@chakra-ui/react";
 import "./page.css";
-import { logoSrc } from "../assets/index";
 import LoadingSkeleton from "../components/loadingSkeleton/LoadingSkeleton";
 import EmptyNft from "../components/emptyNft/EmptyNft";
 import ConnectWallet from "../components/connectWallet/ConnectWallet";
@@ -25,10 +22,10 @@ function Page() {
 
   const numNFTs = Number(data);
 
-  let groups = [];
+  let nfts = [];
   if (!isNaN(numNFTs) && numNFTs > 0) {
     for (let i = 0; i < numNFTs; i++) {
-      groups.push(<Group title={`nft${i + 1}`} key={i} id={i + 1} />);
+      nfts.push(<NftCard title={`nft${i + 1}`} key={i} id={i + 1} />);
     }
   }
 if(!isConnected){
@@ -42,8 +39,8 @@ if(!isConnected){
             <LoadingSkeleton />
             <LoadingSkeleton />
           </>
-        ) : groups.length > 0 ? (
-          groups
+        ) : nfts.length > 0 ? (
+          nfts
         ) : (
         isConnected ?  <EmptyNft />:''
         )}

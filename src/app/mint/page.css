@@ -1,0 +1,10 @@
+.checkBoxWrap{
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    width: 220px;
+    justify-content: space-between;
+}
+.checkBoxWrap label{
+    margin: 0;
+}
