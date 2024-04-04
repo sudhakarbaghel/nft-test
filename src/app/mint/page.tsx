@@ -102,16 +102,16 @@ const MintPage = () => {
       setMintForSelf(true);
     }
   }, [address, owner]);
-  useEffect(()=>{
-if(batchMint){
-  setRecipientEnabled(true)
-}
-  },[batchMint])
+  useEffect(() => {
+    if (batchMint) {
+      setRecipientEnabled(true);
+    }
+  }, [batchMint]);
 
   if (!isConnected) {
     return <ConnectWallet />;
   }
- 
+
   return (
     <FormControl isInvalid={!!error}>
       <Box
@@ -154,11 +154,7 @@ if(batchMint){
           <span>Add Recipient Address</span>
           <Checkbox
             onChange={() => {
-              if (address != owner) {
-                onOpen();
-                setError("Only owner can add recipient!");
-                return;
-              } else if (batchMint) {
+               if (batchMint) {
                 setRecipientEnabled(true);
               } else {
                 setRecipientEnabled(!recipientEnabled);
@@ -181,7 +177,6 @@ if(batchMint){
                 setError("Only owner can perform batch mint!");
               } else {
                 setBatchMint(!batchMint);
-                
               }
             }}
             isChecked={batchMint}
@@ -196,13 +191,11 @@ if(batchMint){
           <span>Mint for self</span>
           <Checkbox
             onChange={() => {
-              if (recipientEnabled || batchMint && !mintForSelf) {
+              if (recipientEnabled || (batchMint && !mintForSelf)) {
                 setRecipientEnabled(false);
-                setBatchMint(false)
-
-              } 
-                setMintForSelf(!mintForSelf);
-              
+                setBatchMint(false);
+              }
+              setMintForSelf(!mintForSelf);
             }}
             isChecked={mintForSelf && !recipientEnabled && !batchMint}
             mt={4}
@@ -239,10 +232,9 @@ if(batchMint){
             marginRight="auto"
             isDisabled={
               isPending ||
-              (batchMint?(nftCount<1)||!recipientAddress:false)||
-              (recipientEnabled?!recipientAddress:false)||
-              (!batchMint && !recipientEnabled ?!mintForSelf:false)
-
+              (batchMint ? nftCount < 1 || !recipientAddress : false) ||
+              (recipientEnabled ? !recipientAddress : false) ||
+              (!batchMint && !recipientEnabled ? !mintForSelf : false)
             }
           >
             {isConfirming ? (
