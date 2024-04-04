@@ -22,7 +22,7 @@ import {
 } from "wagmi";
 import Modal from "../../components/modal/Modal";
 import ConnectWallet from "@/components/connectWallet/ConnectWallet";
-import './page.css';
+import "./page.css";
 const MintPage = () => {
   const {
     data: hash,
@@ -47,10 +47,6 @@ const MintPage = () => {
     try {
       if (recipientEnabled && !validateRecipientAddress()) {
         setError("Invalid recipient address");
-        return;
-      }
-      if (!mintForSelf) {
-        setError("Please select an option to proceed!");
         return;
       }
       if (batchMint && nftCount < 1) {
@@ -106,9 +102,16 @@ const MintPage = () => {
       setMintForSelf(true);
     }
   }, [address, owner]);
+  useEffect(()=>{
+if(batchMint){
+  setRecipientEnabled(true)
+}
+  },[batchMint])
+
   if (!isConnected) {
     return <ConnectWallet />;
   }
+ 
   return (
     <FormControl isInvalid={!!error}>
       <Box
@@ -152,9 +155,9 @@ const MintPage = () => {
           <Checkbox
             onChange={() => {
               if (address != owner) {
-                setRecipientEnabled(false);
                 onOpen();
                 setError("Only owner can add recipient!");
+                return;
               } else if (batchMint) {
                 setRecipientEnabled(true);
               } else {
@@ -178,6 +181,7 @@ const MintPage = () => {
                 setError("Only owner can perform batch mint!");
               } else {
                 setBatchMint(!batchMint);
+                
               }
             }}
             isChecked={batchMint}
@@ -192,9 +196,15 @@ const MintPage = () => {
           <span>Mint for self</span>
           <Checkbox
             onChange={() => {
-              setMintForSelf(!mintForSelf);
+              if (recipientEnabled || batchMint && !mintForSelf) {
+                setRecipientEnabled(false);
+                setBatchMint(false)
+
+              } 
+                setMintForSelf(!mintForSelf);
+              
             }}
-            isChecked={mintForSelf}
+            isChecked={mintForSelf && !recipientEnabled && !batchMint}
             mt={4}
             marginRight="auto"
             marginLeft="auto"
@@ -229,9 +239,10 @@ const MintPage = () => {
             marginRight="auto"
             isDisabled={
               isPending ||
-              (recipientEnabled && !recipientAddress) ||
-              (batchMint && nftCount < 1) ||
-              !mintForSelf
+              (batchMint?(nftCount<1)||!recipientAddress:false)||
+              (recipientEnabled?!recipientAddress:false)||
+              (!batchMint && !recipientEnabled ?!mintForSelf:false)
+
             }
           >
             {isConfirming ? (

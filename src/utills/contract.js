@@ -1,4 +1,4 @@
-export const contAddress = "0x95441750fF94E3452269121933d5E98Ddc1638B4";
+export const contAddress = "0x41ee7169D027bAf4D9c5E1f8a2FF46EF9e29eFd9";
 export const abi = [
   {
     inputs: [
